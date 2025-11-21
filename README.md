@@ -1,1 +1,1 @@
-# mcp-marketplace
+# Semgrep MCP Marketplace
