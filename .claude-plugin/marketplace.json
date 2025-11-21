@@ -1,0 +1,13 @@
+{
+    "name": "semgrep-mcp-marketplace",
+    "owner": {
+    "name": "Semgrep"
+    },
+    "plugins": [
+        {
+            "name": "semgrep-mcp-plugin",
+            "source": "./semgrep-mcp-plugin",
+            "description": "Semgrep MCP Plugin"
+        }
+    ]
+}
