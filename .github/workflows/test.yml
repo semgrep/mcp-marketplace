@@ -1,0 +1,89 @@
+name: Test Plugin
+
+on:
+  push:
+
+jobs:
+  # First job: Check version bump on PR
+  check-version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for comparison
+
+      - name: Check if plugin files changed and version bumped
+        run: |
+          # Get the base branch (usually main)
+          git fetch origin ${{ github.base_ref }}
+
+          # Run the version check script
+          chmod +x .github/scripts/check-plugin-version.sh
+          ./.github/scripts/check-plugin-version.sh ${{ github.base_ref }}
+
+  # Second job: Read the minimum version from file
+  read-version:
+    runs-on: ubuntu-latest
+    outputs:
+      min-version: ${{ steps.read-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Read minimum Semgrep version
+        id: read-version
+        run: |
+          VERSION=$(cat semgrep-version)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Minimum Semgrep version: $VERSION"
+
+  # Third job: Test against multiple versions
+  test:
+    needs: read-version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        semgrep-version:
+          - ${{ needs.read-version.outputs.min-version }}  # Minimum version
+          - 'latest'  # Latest stable version
+      fail-fast: false  # Continue testing other versions even if one fails
+
+    name: test (${{ matrix.semgrep-version }})
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Semgrep
+        run: |
+          if [ "${{ matrix.semgrep-version }}" = "latest" ]; then
+            pip install semgrep
+          else
+            pip install semgrep==${{ matrix.semgrep-version }}
+          fi
+
+      - name: Verify Semgrep installation
+        run: |
+          semgrep --version
+          INSTALLED=$(semgrep --version | head -n1 | awk '{print $1}')
+          echo "Installed version: $INSTALLED"
+          echo "Required minimum: ${{ needs.read-version.outputs.min-version }}"
+
+      - name: Check version compatibility
+        run: |
+          export CLAUDE_PLUGIN_ROOT="${GITHUB_WORKSPACE}/plugin"
+          chmod +x plugin/scripts/check_version.sh
+          ./plugin/scripts/check_version.sh
+
+      # Run plugin hook tests
+      - name: Test plugin functionality
+        run: |
+          echo "Testing plugin with Semgrep ${{ matrix.semgrep-version }}"
+          export CLAUDE_PLUGIN_ROOT="${GITHUB_WORKSPACE}/plugin"
+          chmod +x tests/test_hooks.sh
+          ./tests/test_hooks.sh
