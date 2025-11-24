@@ -16,5 +16,7 @@ You are setting up Semgrep for Claude Code. Do the following in order and confir
 
 4) Report back:
 - Confirm Semgrep login/install status by running `semgrep --pro --version`
+- Also check the Semgrep version in `${CLAUDE_PLUGIN_ROOT}/../semgrep-version` is lower
+than or equal to the version installed.
 
 5) Tell the user that they are all set for using the Semgrep Plugin!
