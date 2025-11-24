@@ -15,7 +15,6 @@ You are setting up Semgrep for Claude Code. Do the following in order and confir
 - Run: `semgrep install-semgrep-pro || true`
 
 4) Report back:
-- Confirm the `~/.claude/CLAUDE.md` file exists with the specified content
 - Confirm Semgrep login/install status by running `semgrep --pro --version`
 
 5) Tell the user that they are all set for using the Semgrep Plugin!
