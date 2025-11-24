@@ -5,9 +5,9 @@
     },
     "plugins": [
         {
-            "name": "mcp-plugin",
+            "name": "semgrep-plugin",
             "source": "./plugin",
-            "description": "Semgrep MCP Plugin"
+            "description": "Plugin by Semgrep. Allows Claude to use Semgrep via the MCP, hooks, and commands."
         }
     ]
 }
