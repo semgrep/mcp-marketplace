@@ -1,5 +1,5 @@
 ---
-description: Greet the user with a personalized message
+description: setup
 ---
 
 # Hello Command
