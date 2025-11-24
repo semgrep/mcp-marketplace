@@ -5,7 +5,7 @@
     },
     "plugins": [
         {
-            "name": "plugin",
+            "name": "mcp-plugin",
             "source": "./plugin",
             "description": "Semgrep MCP Plugin"
         }
