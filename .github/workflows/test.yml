@@ -1,11 +1,12 @@
 name: Test Plugin
 
 on:
-  push:
+  pull_request:
 
 jobs:
   # First job: Check version bump on PR
   check-version-bump:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
@@ -16,11 +17,11 @@ jobs:
       - name: Check if plugin files changed and version bumped
         run: |
           # Get the base branch (usually main)
-          git fetch origin ${{ github.base_ref }}
+          git fetch origin ${{ github.event.pull_request.base.ref }}
 
           # Run the version check script
           chmod +x .github/scripts/check-plugin-version.sh
-          ./.github/scripts/check-plugin-version.sh ${{ github.base_ref }}
+          ./.github/scripts/check-plugin-version.sh ${{ github.event.pull_request.base.ref }}
 
   # Second job: Read the minimum version from file
   read-version:
