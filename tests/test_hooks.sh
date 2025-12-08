@@ -34,6 +34,14 @@ else
     ALL_TESTS_PASSED=false
 fi
 
+# Run Inject Secure Defaults hook test
+echo ""
+if bash "${SCRIPT_DIR}/test_secure_defaults_hook.sh"; then
+    :
+else
+    ALL_TESTS_PASSED=false
+fi
+
 # Print final summary
 echo ""
 print_separator
