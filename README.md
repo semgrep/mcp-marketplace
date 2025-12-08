@@ -15,7 +15,7 @@ To use the Semgrep plugin:
     ```
     /plugin install semgrep-plugin@semgrep
     ```
-1. If it is installed, see if you can run the `/semgrep-plugin:setup` command. If you cannot run the command, try enabling the plugin:
+1. If it is installed, see if you can run the `/semgrep-plugin:setup_semgrep_plugin` command. If you cannot run the command, try enabling the plugin:
     ```
     /plugin enable semgrep-plugin@semgrep
     ```
