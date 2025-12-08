@@ -1,15 +1,37 @@
 {
-    "hooks": {
-      "PostToolUse": [
-        {
-          "matcher": "Write|Edit",
-          "hooks": [
-            {
-              "type": "command",
-              "command": "semgrep mcp -k post-tool-cli-scan"
-            }
-          ]
-        }
-      ]
-    }
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "semgrep mcp -k post-tool-cli-scan"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "semgrep mcp -k inject-secure-defaults-short"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "semgrep mcp -k inject-secure-defaults"
+          }
+        ]
+      }
+    ]
+  }
 }
