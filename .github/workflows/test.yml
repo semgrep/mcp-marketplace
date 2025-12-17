@@ -34,7 +34,7 @@ jobs:
       - name: Read minimum Semgrep version
         id: read-version
         run: |
-          VERSION=$(cat semgrep-version)
+          VERSION=$(cat plugin/semgrep-version)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Minimum Semgrep version: $VERSION"
 
