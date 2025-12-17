@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Path to required version file
-REQUIRED_VERSION_FILE="${CLAUDE_PLUGIN_ROOT}/../semgrep-version"
+REQUIRED_VERSION_FILE="${CLAUDE_PLUGIN_ROOT}/semgrep-version"
 REQUIRED_VERSION=$(cat "$REQUIRED_VERSION_FILE" 2>/dev/null || echo "unknown")
 
 # Get installed Semgrep version
