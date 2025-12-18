@@ -9,7 +9,7 @@ You are setting up Semgrep for Claude Code. Do the following in order and confir
 - If not installed, run: `brew install semgrep`
 
 2) Authenticate Semgrep:
-- Run: `semgrep login --override-tty`
+- Run: `semgrep login --login`
 
 3) Install Semgrep Pro:
 - Run: `semgrep install-semgrep-pro || true`
