@@ -12,7 +12,8 @@ test_inject_secure_defaults() {
 
     local HOOK_INPUT=$(cat <<EOF
 {
-    "hook_event_name": "MOCK_EVENT"
+    "hook_event_name": "MOCK_EVENT",
+    "cwd": "test"
 }
 EOF
 )
