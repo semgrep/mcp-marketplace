@@ -1,4 +1,10 @@
 # Change Log
+## 0.4.1
+Fixed the `--force` flag passsed into the `semgrep login` command
+
+## 0.4.0
+Updated the `semgrep login` command for setup
+
 ## 0.3.0
 Fixed bug in SessionStart hook
 
