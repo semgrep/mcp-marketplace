@@ -1,4 +1,6 @@
 # Change Log
+## 0.5.0
+chore: sync with template
 ## 0.4.1
 Fixed the `--force` flag passsed into the `semgrep login` command
 
