@@ -1,0 +1,65 @@
+name: Require Version Bump Label
+
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+
+jobs:
+  check-plugin-changes:
+    name: Check for Plugin Changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_plugin_changes: ${{ steps.check.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if plugin files changed
+        id: check
+        run: |
+          # Get list of changed files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+
+          # Define plugin file patterns (adjust based on repo structure)
+          # For Claude: plugin/, For Cursor: hooks/, mcp.json, skills/, scripts/
+          PLUGIN_PATTERNS="plugin/|hooks/|mcp\.json|\.mcp\.json|skills/|scripts/|commands/|semgrep-version"
+
+          if echo "$CHANGED_FILES" | grep -qE "$PLUGIN_PATTERNS"; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Plugin files changed:"
+            echo "$CHANGED_FILES" | grep -E "$PLUGIN_PATTERNS" || true
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No plugin files changed"
+          fi
+
+  check-version-label:
+    name: Check Version Bump Label
+    needs: check-plugin-changes
+    if: needs.check-plugin-changes.outputs.has_plugin_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for version bump label
+        run: |
+          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+
+          if echo "$LABELS" | grep -q '"bump:patch"'; then
+            echo "✓ Found label: bump:patch"
+            exit 0
+          elif echo "$LABELS" | grep -q '"bump:minor"'; then
+            echo "✓ Found label: bump:minor"
+            exit 0
+          elif echo "$LABELS" | grep -q '"bump:major"'; then
+            echo "✓ Found label: bump:major"
+            exit 0
+          else
+            echo "✗ Missing version bump label!"
+            echo ""
+            echo "This PR modifies plugin files and requires a version bump."
+            echo "Please add one of the following labels:"
+            echo "  - bump:patch  (bug fixes: 0.4.1 → 0.4.2)"
+            echo "  - bump:minor  (new features: 0.4.1 → 0.5.0)"
+            echo "  - bump:major  (breaking changes: 0.4.1 → 1.0.0)"
+            exit 1
+          fi
