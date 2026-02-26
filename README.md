@@ -16,12 +16,13 @@ To use the Semgrep plugin:
     /plugin install semgrep-plugin@semgrep
     ```
 1. If it is installed, see if you can run the `/semgrep-plugin:setup-semgrep-plugin` command. If you cannot run the command, try restarting your claude instance by exiting out of the current session and re-running:
-  ```
-  claude
-  ```
+    ```
+    claude
+    ```
 1. If it still doesn't work, try enabling the plugin:
     ```
     /plugin enable semgrep-plugin@semgrep
+    ```
 
 ## Contributing
 
