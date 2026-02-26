@@ -11,17 +11,6 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k inject-secure-defaults-short"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "startup",
@@ -38,6 +27,17 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check_version.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "semgrep mcp -k inject-secure-defaults-short"
           }
         ]
       }
