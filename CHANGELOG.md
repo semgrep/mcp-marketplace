@@ -1,4 +1,6 @@
 # Change Log
+## 0.5.0
+fix: small fixes to updating the changelog
 ## 0.4.1
 Fixed the `--force` flag passsed into the `semgrep login` command
 
