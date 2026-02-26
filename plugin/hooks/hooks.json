@@ -1,46 +1,24 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k post-tool-cli-scan"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k inject-secure-defaults-short"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k inject-secure-defaults"
-          }
-        ]
-      },
-      {
-        "matcher": "startup|resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check_version.sh"
-          }
-        ]
-      }
-    ]
-  }
+  "hooks": [
+    {
+      "type": "PostToolUse",
+      "matcher": "Write|Edit",
+      "command": "semgrep mcp -k post-tool-cli-scan"
+    },
+    {
+      "type": "SessionStart",
+      "matcher": "startup",
+      "command": "semgrep mcp -k inject-secure-defaults"
+    },
+    {
+      "type": "UserPromptSubmit",
+      "matcher": "",
+      "command": "semgrep mcp -k inject-secure-defaults-short"
+    },
+    {
+      "type": "SessionStart",
+      "matcher": "startup|resume|clear|compact",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check_version.sh"
+    }
+  ]
 }

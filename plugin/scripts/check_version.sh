@@ -1,25 +1,53 @@
 #!/bin/bash
 
-# Path to required version file
-REQUIRED_VERSION_FILE="${CLAUDE_PLUGIN_ROOT}/semgrep-version"
-REQUIRED_VERSION=$(cat "$REQUIRED_VERSION_FILE" 2>/dev/null || echo "unknown")
+# Check if the installed Semgrep version meets the minimum requirement
+# This script is shared between Claude and Cursor plugins
+
+set -e
+
+# Determine the script's directory and find the semgrep-version file
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Look for semgrep-version in different locations depending on context
+if [ -f "${SCRIPT_DIR}/../../semgrep-version" ]; then
+    # Running from template repo
+    MIN_VERSION_FILE="${SCRIPT_DIR}/../../semgrep-version"
+elif [ -n "${CLAUDE_PLUGIN_ROOT}" ] && [ -f "${CLAUDE_PLUGIN_ROOT}/semgrep-version" ]; then
+    # Running from Claude plugin
+    MIN_VERSION_FILE="${CLAUDE_PLUGIN_ROOT}/semgrep-version"
+elif [ -n "${CURSOR_PLUGIN_ROOT}" ] && [ -f "${CURSOR_PLUGIN_ROOT}/semgrep-version" ]; then
+    # Running from Cursor plugin
+    MIN_VERSION_FILE="${CURSOR_PLUGIN_ROOT}/semgrep-version"
+else
+    echo "Error: Could not find semgrep-version file"
+    exit 1
+fi
+
+MIN_VERSION=$(cat "$MIN_VERSION_FILE")
 
 # Get installed Semgrep version
-INSTALLED_VERSION=$(semgrep --version 2>/dev/null | head -n1 | awk '{print $1}')
+if ! command -v semgrep &> /dev/null; then
+    echo "Error: Semgrep is not installed"
+    exit 1
+fi
+
+INSTALLED_VERSION=$(semgrep --version 2>/dev/null | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n1)
 
 if [ -z "$INSTALLED_VERSION" ]; then
-    echo "⚠️  Semgrep not found. Please install Semgrep to use this plugin." >&2
-    echo "   Visit: https://github.com/semgrep/mcp-marketplace" >&2
+    echo "Error: Could not determine installed Semgrep version"
     exit 1
 fi
 
-# Simple version comparison (works for semantic versions)
-if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$INSTALLED_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
-    echo "⚠️  Semgrep version mismatch!" >&2
-    echo "   Required: >= $REQUIRED_VERSION" >&2
-    echo "   Installed: $INSTALLED_VERSION" >&2
-    echo "   Please update Semgrep to use this plugin!" >&2
+# Compare versions using sort -V
+version_gte() {
+    [ "$1" = "$(echo -e "$1\n$2" | sort -V | tail -n1)" ]
+}
+
+if version_gte "$INSTALLED_VERSION" "$MIN_VERSION"; then
+    echo "Success: Semgrep $INSTALLED_VERSION >= $MIN_VERSION (minimum required)"
+    exit 0
+else
+    echo "Error: Semgrep $INSTALLED_VERSION < $MIN_VERSION (minimum required)"
+    echo "Please update Semgrep: brew upgrade semgrep"
     exit 1
 fi
-
-echo "✓ Semgrep $INSTALLED_VERSION (compatible)"
