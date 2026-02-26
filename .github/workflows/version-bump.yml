@@ -1,0 +1,116 @@
+name: Version Bump on Label
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  bump-version:
+    name: Bump Version
+    if: startsWith(github.event.label.name, 'bump:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref }}
+
+      - name: Determine bump type
+        id: bump_type
+        env:
+          LABEL: ${{ github.event.label.name }}
+        run: |
+          BUMP_TYPE="${LABEL#bump:}"
+          echo "type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Find plugin.json
+        id: find_plugin
+        run: |
+          # Look for plugin.json in different locations
+          if [ -f "plugin/.claude-plugin/plugin.json" ]; then
+            echo "path=plugin/.claude-plugin/plugin.json" >> $GITHUB_OUTPUT
+          elif [ -f ".claude-plugin/plugin.json" ]; then
+            echo "path=.claude-plugin/plugin.json" >> $GITHUB_OUTPUT
+          elif [ -f ".cursor-plugin/plugin.json" ]; then
+            echo "path=.cursor-plugin/plugin.json" >> $GITHUB_OUTPUT
+          else
+            echo "Could not find plugin.json"
+            exit 1
+          fi
+
+      - name: Read current version
+        id: current_version
+        run: |
+          PLUGIN_JSON="${{ steps.find_plugin.outputs.path }}"
+          VERSION=$(grep -o '"version": *"[^"]*"' "$PLUGIN_JSON" | head -1 | grep -o '[0-9]*\.[0-9]*\.[0-9]*')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+          BUMP_TYPE="${{ steps.bump_type.outputs.type }}"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          case "$BUMP_TYPE" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Bumping version: $VERSION → $NEW_VERSION ($BUMP_TYPE)"
+
+      - name: Update version in plugin.json
+        run: |
+          PLUGIN_JSON="${{ steps.find_plugin.outputs.path }}"
+          OLD_VERSION="${{ steps.current_version.outputs.version }}"
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+
+          sed -i "s/\"version\": *\"$OLD_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$PLUGIN_JSON"
+
+          echo "Updated $PLUGIN_JSON:"
+          grep version "$PLUGIN_JSON"
+
+      - name: Update CHANGELOG.md
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # Strip the "[Template Sync] " prefix from the PR title to get the description
+          DESCRIPTION="${PR_TITLE#\[Template Sync\] }"
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+
+          if [ -f CHANGELOG.md ]; then
+            # Build new file: keep header, insert entry, append rest
+            {
+              head -1 CHANGELOG.md
+              printf '## %s\n%s\n' "$NEW_VERSION" "$DESCRIPTION"
+              tail -n +2 CHANGELOG.md
+            } > CHANGELOG.tmp
+            mv CHANGELOG.tmp CHANGELOG.md
+          else
+            printf '# Change Log\n\n## %s\n%s\n' "$NEW_VERSION" "$DESCRIPTION" > CHANGELOG.md
+          fi
+
+          echo "Updated CHANGELOG.md:"
+          head -10 CHANGELOG.md
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -m "chore: bump version to ${{ steps.new_version.outputs.version }}"
+          git push
