@@ -1,22 +1,48 @@
----
-description: setup Claude Code for the Semgrep plugin (semgrep-plugin)
----
+# Setup Semgrep Plugin
 
-You are setting up Semgrep for Claude Code. Do the following in order and confirm each step:
+Follow these steps to set up the Semgrep plugin:
 
-1) Install Semgrep:
-- Check if Semgrep is already installed by running: `which semgrep`
-- If not installed, run: `brew install semgrep`
+## 1. Install Semgrep
 
-2) Authenticate Semgrep:
-- Run: `semgrep login --force`
+Check if Semgrep is installed, and install it if not:
 
-3) Install Semgrep Pro:
-- Run: `semgrep install-semgrep-pro || true`
+```bash
+which semgrep || brew install semgrep
+```
 
-4) Report back:
-- Confirm Semgrep login/install status by running `semgrep --pro --version`
-- Also check the Semgrep version in `${CLAUDE_PLUGIN_ROOT}/semgrep-version` is lower
-than or equal to the version installed.
+## 2. Authenticate with Semgrep
 
-5) Tell the user that they are all set for using the Semgrep Plugin!
+Log in to Semgrep (this will open a browser window):
+
+```bash
+semgrep login --force
+```
+
+## 3. Install Semgrep Pro Engine
+
+Install the Pro engine for enhanced scanning capabilities:
+
+```bash
+semgrep install-semgrep-pro || true
+```
+
+## 4. Verify Installation
+
+Confirm everything is working:
+
+```bash
+semgrep --pro --version
+```
+
+## 5. Check Version Compatibility
+
+Verify your Semgrep version meets the minimum requirement:
+
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/check_version.sh
+```
+
+If the version check fails, please update Semgrep:
+```bash
+brew upgrade semgrep
+```

@@ -1,8 +1,10 @@
 {
-    "mcpServers": {
-      "semgrep": {
-        "command": "semgrep",
-        "args": ["mcp"]
-      }
+  "mcpServers": {
+    "semgrep": {
+      "command": "semgrep",
+      "args": [
+        "mcp"
+      ]
     }
+  }
 }

@@ -16,10 +16,13 @@ To use the Semgrep plugin:
     /plugin install semgrep-plugin@semgrep
     ```
 1. If it is installed, see if you can run the `/semgrep-plugin:setup_semgrep_plugin` command. If you cannot run the command, try restarting your claude instance by exiting out of the current session and re-running:
-   ```
-   claude
-   ```
+  ```
+  claude
+  ```
 1. If it still doesn't work, try enabling the plugin:
     ```
     /plugin enable semgrep-plugin@semgrep
-    ```
+
+## Contributing
+
+This plugin is managed by the [mcp-marketplace-template](https://github.com/semgrep/mcp-marketplace-template) repository. Changes should be made there and synced via automated PRs.
