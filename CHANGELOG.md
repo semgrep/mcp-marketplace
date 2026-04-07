@@ -1,4 +1,6 @@
 # Change Log
+## 0.5.2
+chore: update plugin and marketplace description
 ## 0.5.1
 fix: update formatting in read-me.yaml for commands
 ## 0.5.0

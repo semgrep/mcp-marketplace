@@ -7,7 +7,7 @@
         {
             "name": "semgrep-plugin",
             "source": "./plugin",
-            "description": "Plugin by Semgrep. Allows Claude to use Semgrep via the MCP, hooks, and commands."
+            "description": "Scans agent-generated code for security vulnerabilities using Semgrep."
         }
     ]
 }
