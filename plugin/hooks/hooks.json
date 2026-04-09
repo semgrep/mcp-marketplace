@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "semgrep mcp -k post-tool-cli-scan"
+            "command": "SEMGREP_FRAGMENT_URL=https://mcp-dev.semgrep.ai/fragment ${CLAUDE_PLUGIN_ROOT}/scripts/run-semgrep.py scan"
           }
         ]
       }
