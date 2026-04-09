@@ -13,31 +13,13 @@
     ],
     "SessionStart": [
       {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k inject-secure-defaults"
-          }
-        ]
-      },
-      {
         "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check_version.sh"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "semgrep mcp -k inject-secure-defaults-short"
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/login.py",
+            "async": true,
+            "timeout": 180
           }
         ]
       }

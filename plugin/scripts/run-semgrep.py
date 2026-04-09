@@ -63,7 +63,7 @@ def get_app_token_from_settings() -> str:
             return None
         with open(settings_file, 'r') as fd:
             settings = yaml.safe_load(fd)
-            app_token = settings["api_token"]
+            app_token = settings.get("api_token")
             if app_token:
                 return app_token
             else:
@@ -184,6 +184,11 @@ if __name__ == "__main__":
     if app_token:
         config["app_token"] = app_token
         auth = SemgrepAppToken(app_token)
+    
+    if not app_token:
+        response = PostToolHookResponse(decision="block", reason="No app token found. You might have to restart your Claude session and activate your Semgrep session in your browser. You should not have to run `semgrep login` manually, a browser window will open at the beginning of the Claude session.")
+        print(response.model_dump_json())
+        sys.exit(0) # exit 0 here to show json response to user
 
     scan_files = load_files(Path.cwd(), files)
 
