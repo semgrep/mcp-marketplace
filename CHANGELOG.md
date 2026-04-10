@@ -1,4 +1,6 @@
 # Change Log
+## 0.5.3
+fix: update plugin, marketplace names (semgrep->semgrep-marketplace, semgrep-plugin->semgrep)
 ## 0.5.2
 chore: update plugin and marketplace description
 ## 0.5.1
