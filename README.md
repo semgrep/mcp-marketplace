@@ -11,8 +11,10 @@ To install the Semgrep Claude Plugin:
     ```
     /plugin 
     ```
-1. Go to Discover, search for Semgrep, and click Install.
-   
+1. Go to Discover, search for Semgrep, and click Install. Here is a successful installation of the Semgrep Claude Plugin.
+
+   <img width="1068" height="306" alt="claude_installation" src="https://github.com/user-attachments/assets/78f8d8ba-a53c-4bcf-a96b-fd677d4675c5" />
+
 1. Set up the Semgrep plugin by running the following skill. This also installs the Semgrep CLI:
     ```
    /setup-semgrep-plugin
