@@ -2,27 +2,23 @@
 
 This repo is where the Semgrep [Plugin Marketplace](https://code.claude.com/docs/en/plugin-marketplaces) (`semgrep`) and the Semgrep [Plugin](https://code.claude.com/docs/en/plugins) (`semgrep@semgrep-marketplace`) live.
 
-To use the Semgrep plugin:
+To install the Semgrep Claude Plugin:
 1. Start a Claude Code instance by running:
     ```
     claude
     ```
-1. Add the Semgrep marketplace by running the following command in Claude:
+1. Open the plugin marketplace:
     ```
-    /plugin marketplace add semgrep/mcp-marketplace
+    /plugin 
     ```
-1. Install the plugin from the marketplace:
+1. Go to Discover, search for Semgrep, and click Install.
+   
+1. Set up the Semgrep plugin by running the following skill. This also installs the Semgrep CLI:
     ```
-    /plugin install semgrep@semgrep-marketplace
+   /setup-semgrep-plugin
     ```
-1. If it is installed, see if you can run the `/semgrep:setup-semgrep-plugin` command. If you cannot run the command, try restarting your claude instance by exiting out of the current session and re-running:
-    ```
-    claude
-    ```
-1. If it still doesn't work, try enabling the plugin:
-    ```
-    /plugin enable semgrep@semgrep-marketplace
-    ```
+1. If you run into issues, please reach out in the [Semgrep Community Slack](https://semgrep.slack.com/) and join the #mcp channel.
+  
 
 ## Contributing
 
